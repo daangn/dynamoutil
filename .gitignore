@@ -1,0 +1,14 @@
+# Binaries for programs and plugins
+dynamoutil
+dynamoutil.exe
+build
+
+# Editors
+.vscode/
+.idea/
+
+.dynamoutil.yaml
+.dynamoutil.*.yaml
+
+.envrc
+dist

@@ -1,0 +1,12 @@
+copy:
+  - service: "default"
+    origin:
+      region: "ap-northeast-2"
+      table: "remote-dynamodb-table-name"
+    target:
+      region: "ap-northeast-2"
+      endpoint: "http://localhost:8000"
+      table: "local-dynamodb-table-name"
+      ## Must match keys of target dynamodb.
+      # accessKeyID: "123"
+      # secretAccessKey: "123"
