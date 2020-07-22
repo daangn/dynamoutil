@@ -46,7 +46,7 @@ func Copy(cfg *config.DynamoDBMappingConfig) error {
 		BrightBlue("endpoint: ").String()+cfg.Origin.Endpoint,
 	)
 	fmt.Println(
-		Bold(Green("Origin")),
+		Bold(Green("Target")),
 		BrightBlue("region: ").String()+cfg.Target.Region+" ",
 		BrightBlue("table: ").String()+cfg.Target.TableName+" ",
 		BrightBlue("endpoint: ").String()+cfg.Target.Endpoint,
@@ -146,6 +146,7 @@ func Copy(cfg *config.DynamoDBMappingConfig) error {
 		}
 	}
 
+	fmt.Println()
 	var lastKey map[string]*dynamodb.AttributeValue
 
 	wg := sync.WaitGroup{}
