@@ -7,8 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/daangn/dynamoutil/pkg/config"
 	"github.com/rs/zerolog/log"
-
-	. "github.com/logrusorgru/aurora"
 )
 
 // DynamoDBConfig represents required parameters to open
