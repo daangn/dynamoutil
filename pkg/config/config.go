@@ -102,6 +102,16 @@ func BindCopyConfigByKey(key string) (*Config, error) {
 	return &cfg, nil
 }
 
+// BindDumpConfigByKey binds the read configurations to Dump Config struct
+func BindDumpConfigByKey(key string) (*Config, error) {
+	var cfg Config
+	// NOTE: viper uses "mapstructure" tags instead of "yaml" tags
+	if err := viper.UnmarshalKey(key, &cfg.Dump); err != nil {
+		return nil, err
+	}
+	return &cfg, nil
+}
+
 // MustReadCfgFile reads the config file stated with or without given config file location
 func MustReadCfgFile() {
 	// If a config file is found, read it in.
