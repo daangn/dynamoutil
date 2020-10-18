@@ -11,14 +11,65 @@ import (
 
 // Config represents a global configuration
 type Config struct {
-	Copy []*DynamoDBMappingConfig `mapstructure:"copy"`
+	Copy []*DynamoDBCopyConfig `mapstructure:"copy"`
+	Dump []*DynamoDBDumpConfig `mapstructure:"dump"`
 }
 
-// DynamoDBMappingConfig maps origin and target configs for DynamoDB
-type DynamoDBMappingConfig struct {
+// Output represents a file extension
+type Output string
+
+// Output constants
+const (
+	OutputJSON    Output = "json"
+	OutputJSONRaw Output = "jsonRaw"
+)
+
+// DefaultOutput represents the default output
+var DefaultOutput = OutputJSONRaw
+
+// DumpPrefix returns a prefix string for dump
+func (o Output) DumpPrefix() []byte {
+	switch o {
+	case OutputJSON:
+		return []byte("[")
+	default:
+		return []byte("")
+	}
+}
+
+// DumpDelimiter returns a delimiter string for dump
+func (o Output) DumpDelimiter() []byte {
+	switch o {
+	case OutputJSON:
+		return []byte(",")
+	default:
+		return []byte("\n")
+	}
+}
+
+// DumpSuffix returns a suffix string for dump
+func (o Output) DumpSuffix() []byte {
+	switch o {
+	case OutputJSON:
+		return []byte("]")
+	default:
+		return []byte("")
+	}
+}
+
+// DynamoDBCopyConfig maps origin and target configs for DynamoDB
+type DynamoDBCopyConfig struct {
 	Service string          `mapstructure:"service"`
 	Origin  *DynamoDBConfig `mapstructure:"origin"`
 	Target  *DynamoDBConfig `mapstructure:"target"`
+}
+
+// DynamoDBDumpConfig maps dump configs for DynamoDB
+type DynamoDBDumpConfig struct {
+	DynamoDB DynamoDBConfig `mapstructure:"db"`
+	Service  string         `mapstructure:"service"`
+	FileName string         `mapstructure:"filename"`
+	Output   Output         `mapstructure:"output"`
 }
 
 // DynamoDBConfig represents connection info for a specific table

@@ -10,3 +10,12 @@ copy:
       ## Must match keys of target dynamodb.
       # accessKeyID: "123"
       # secretAccessKey: "123"
+dump:
+  - service: "default"
+    db:
+      region: "ap-northeast-2"
+      # endpoint: "http://localhost:8000"
+      table: "remote-dynamodb-table-name"
+    output: json
+    # Default name is dynamodb's table name
+    filename: "remote-dynamodb-table-name"
