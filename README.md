@@ -1,14 +1,18 @@
-<h1 align="center">Dynamoutil</h1>
+<h1 align="center">Dynamoutil🚀</h1>
 
 Collection of useful commands for DynamoDB.
 
 ## Installation
 
-Using go get:
+### Via go get:
 
 ```sh
 $ go get -u github.com/daangn/dynamoutil
 ```
+
+### Download an executable binary
+
+[Github Releases Link](https://github.com/daangn/dynamoutil/releases)
 
 ## Copy a dynamodb table from remote to local
 
@@ -72,6 +76,17 @@ service: default  region: ap-northeast-2  table: remote-aws-table  endpoint:   o
 Are you sure about dumping all items from rocket-chat-alpha-message? [Y/n] Y
 
     Writes 1828 items. 380.71 items/s
+```
+
+```sh
+# The common data structure when you do the DynamoDB dump via AWS Glue or DynamoDB Stream,
+## DynamoDB S3 Export
+{Item:{"PartitionKey": {"S": "partition_key_value"},"SortKey": {"N": "sort_key_value"}}}
+## DynamoDB Stream event & AWS Glue
+{"PartitionKey": {"S": "partition_key_value"},"SortKey": {"N": "sort_key_value"}}
+
+# When you do the dump with Dynamoutil,
+{"PartitionKey": "partition_key_value","SortKey": "sort_key_value"}
 ```
 
 ## Author
