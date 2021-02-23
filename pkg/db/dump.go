@@ -84,7 +84,7 @@ func Dump(cfg *config.DynamoDBDumpConfig) error {
 				continue
 			}
 
-			marshaled, err := marshalDynamo(jsonItem)
+			marshaled, err := MarshalDynamo(jsonItem)
 			if err != nil {
 				log.Err(err).Msg("failed to marshal dynamodb object")
 				continue
