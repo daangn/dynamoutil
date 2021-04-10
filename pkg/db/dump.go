@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/daangn/dynamoutil/pkg/config"
+	"github.com/daangn/dynamoutil/pkg/util"
 	"github.com/rs/zerolog/log"
 
 	. "github.com/logrusorgru/aurora"
@@ -84,7 +85,7 @@ func Dump(cfg *config.DynamoDBDumpConfig) error {
 				continue
 			}
 
-			marshaled, err := marshalDynamo(jsonItem)
+			marshaled, err := util.MarshalDynamo(jsonItem)
 			if err != nil {
 				log.Err(err).Msg("failed to marshal dynamodb object")
 				continue

@@ -1,26 +1,39 @@
-package db
+package util
 
 import (
-	"fmt"
+	"encoding/json"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // MarshalDynamoValue make flatten dynamodb.AttributeValue
-func marshalDynamoValue(item interface{}) (interface{}, error) {
+func MarshalDynamoValue(item interface{}) (interface{}, error) {
 	var result interface{}
 	for k, v := range item.(map[string]interface{}) {
 		if v == nil {
 			continue
 		}
-
 		switch k {
 		case "N", "BOOL", "S", "BS", "NULL", "NS", "SS":
 			result = v
 			break
 		case "L":
-			l := v.([]interface{})
+			var l []map[string]interface{}
+			bytes, err := json.Marshal(v)
+			if err != nil {
+				log.Err(err).Stack().Interface("item", item).Msg("[L]json.Marshal() failed")
+				continue
+			}
+
+			if err := json.Unmarshal(bytes, &l); err != nil {
+				log.Err(err).Stack().Interface("item", item).Msg("[L]json.Unmarshal() failed")
+				continue
+			}
+
 			r := make([]interface{}, 0, len(l))
 			for i := range l {
-				v, err := marshalDynamoValue(l[i])
+				v, err := MarshalDynamoValue(l[i])
 				if err != nil {
 					return nil, err
 				}
@@ -29,14 +42,14 @@ func marshalDynamoValue(item interface{}) (interface{}, error) {
 			result = r
 			break
 		case "M":
-			r, err := marshalDynamo(v)
+			r, err := MarshalDynamo(v)
 			if err != nil {
 				return nil, err
 			}
 			result = r
 			break
 		default:
-			return nil, fmt.Errorf("unsupported format")
+			return nil, errors.New("unsupported format")
 		}
 	}
 
@@ -44,15 +57,15 @@ func marshalDynamoValue(item interface{}) (interface{}, error) {
 }
 
 // MarshalDynamo make flatten dynamodb.Item
-func marshalDynamo(item interface{}) (interface{}, error) {
+func MarshalDynamo(item interface{}) (interface{}, error) {
 	converted, ok := item.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("invalid data to marshal. item=%v", item)
+		return nil, errors.Errorf("invalid data to marshal. item=%v", item)
 	}
 
 	result := make(map[string]interface{}, len(converted))
 	for k1, v1 := range converted {
-		v, err := marshalDynamoValue(v1)
+		v, err := MarshalDynamoValue(v1)
 		if err != nil {
 			return nil, err
 		}
