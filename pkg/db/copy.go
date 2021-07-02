@@ -134,22 +134,24 @@ func Copy(cfg *config.DynamoDBCopyConfig) error {
 	wg := sync.WaitGroup{}
 	now := time.Now()
 	var ops int32
+	var readOps int32
 	go func() {
 		for {
 			time.Sleep(time.Millisecond * 100)
-			fmt.Printf("\r    Writes %d items. %.2f items/s", Blue(ops), Blue(float64(ops)/(time.Since(now).Seconds())))
+			fmt.Printf("\r\tTime spent: %.1f. Read %d items, Writes %d items. %.2f items/s", time.Since(now).Seconds(), Blue(readOps), Blue(ops), Blue(float64(ops)/(time.Since(now).Seconds())))
 		}
 	}()
 
 	for {
 		o, err := originDB.Scan(&dynamodb.ScanInput{
 			TableName:         &cfg.Origin.TableName,
-			Limit:             aws.Int64(10000),
+			Limit:             aws.Int64(2500),
 			ExclusiveStartKey: lastKey,
 		})
 		if err != nil {
 			log.Fatal().Err(err).Msg("Failed to scan origin dynamodb")
 		}
+		atomic.AddInt32(&readOps, int32(len(o.Items)))
 
 		var (
 			chunks [][]*dynamodb.WriteRequest
@@ -162,7 +164,7 @@ func Copy(cfg *config.DynamoDBCopyConfig) error {
 					Item: item,
 				},
 			})
-			if (i+1)%10 == 0 || i == cnt-1 {
+			if (i+1)%25 == 0 || i == cnt-1 {
 				chunks = append(chunks, wrs)
 				wrs = []*dynamodb.WriteRequest{}
 			}
@@ -176,9 +178,9 @@ func Copy(cfg *config.DynamoDBCopyConfig) error {
 				batchWrite(targetDB, map[string][]*dynamodb.WriteRequest{
 					cfg.Target.TableName: ch,
 				})
+				atomic.AddInt32(&ops, int32(len(ch)))
 			}
 
-			atomic.AddInt32(&ops, int32(len(o.Items)))
 		}()
 
 		if o.LastEvaluatedKey != nil {
