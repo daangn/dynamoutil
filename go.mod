@@ -3,7 +3,7 @@ module github.com/daangn/dynamoutil
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go v1.33.7
+	github.com/aws/aws-sdk-go v1.34.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/mitchellh/go-homedir v1.1.0
