@@ -11,8 +11,9 @@ import (
 
 // Config represents a global configuration
 type Config struct {
-	Copy []*DynamoDBCopyConfig `mapstructure:"copy"`
-	Dump []*DynamoDBDumpConfig `mapstructure:"dump"`
+	Copy   []*DynamoDBCopyConfig   `mapstructure:"copy"`
+	Dump   []*DynamoDBDumpConfig   `mapstructure:"dump"`
+	Rename []*DynamoDBRenameConfig `mapstructure:"rename"`
 }
 
 // Output represents a file extension
@@ -55,6 +56,19 @@ func (o Output) DumpSuffix() []byte {
 	default:
 		return []byte("")
 	}
+}
+
+// RenameAttribute defines a before and after pair for attribute renaming.
+type RenameAttribute struct {
+	Before string `mapstructure:"before"`
+	After  string `mapstructure:"after"`
+}
+
+// DynamoDBRenameConfig defines the configuration for renaming attributes.
+type DynamoDBRenameConfig struct {
+	Service string            `mapstructure:"service"`
+	Target  *DynamoDBConfig   `mapstructure:"target"`
+	Rename  []RenameAttribute `mapstructure:"rename"`
 }
 
 // DynamoDBCopyConfig maps origin and target configs for DynamoDB

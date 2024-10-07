@@ -19,3 +19,17 @@ dump:
     output: json
     # Default name is dynamodb's table name
     filename: "remote-dynamodb-table-name"
+rename:
+  - service: "default"
+    target:
+      region: "ap-northeast-2"
+      table: "local-dynamodb-table-name"
+      ## Must match keys of target dynamodb.
+      # endpoint: "http://localhost:54000"
+      # accessKeyID: "123"
+      # secretAccessKey: "123"
+    rename:
+      - before: "oldAttributeName1"
+        after: "newAttributeName1"
+      - before: "oldAttributeName2"
+        after: "newAttributeName2"
