@@ -89,6 +89,53 @@ Are you sure about dumping all items from rocket-chat-alpha-message? [Y/n] Y
 {"PartitionKey": "partition_key_value","SortKey": "sort_key_value"}
 ```
 
+## Rename attributes in a dynamodb table
+
+### Write a config file.
+
+```yaml
+rename:
+  - service: "default"
+    target:
+      region: "ap-northeast-2"
+      table: "local-dynamodb-table-name"
+      ## Must match keys of target dynamodb.
+      # endpoint: "http://localhost:54000"
+      # accessKeyID: "123"
+      # secretAccessKey: "123"
+    rename:
+      - before: "oldAttributeName1"
+        after: "newAttributeName1"
+      - before: "oldAttributeName2"
+        after: "newAttributeName2"
+```
+
+### Run "rename" command.
+
+```sh
+$ dynamoutil -c .dynamoutil.yaml rename
+Config file:.dynamoutil.yaml
+
+Target region: ap-northeast-2  table: local-dynamodb-table-name  endpoint: 
+
+Are you sure about renaming attributes in local-dynamodb-table-name? [Y/n] Y
+
+    Time spent: 12.3s. Read 5000 items, Processed 4500 items. 365.85 items/s
+
+Renamed 4500 items of local-dynamodb-table-name table.
+Execution Time: 12.30 seconds
+Avg: 365.85 ops/s
+
+Detailed Rename Metrics:
+oldAttributeName1 -> newAttributeName1: 3000 items changed, Total Time: 8.15 seconds, Avg Time per item: 0.0027 seconds
+oldAttributeName2 -> newAttributeName2: 1500 items changed, Total Time: 4.15 seconds, Avg Time per item: 0.0028 seconds
+```
+
+#### About the Rename Command
+The rename command reads pairs of attributes to be renamed from the configuration file and updates them in the specified DynamoDB table. It processes items in batches, ensuring that attributes are renamed efficiently while maintaining data integrity. Metrics are provided to track the time taken for each rename operation, the number of items processed, and the average processing time.
+
+Use this command to refactor your DynamoDB schema, making changes to attribute names without affecting the underlying data structure.
+
 ## Author
 
 * Github:
